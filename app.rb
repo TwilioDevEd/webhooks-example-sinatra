@@ -36,7 +36,7 @@ end
 # coming from Twilio.
 private
 def validate_twilio_request
-  twilio_signature = request.env['HTTP_X_TWILIO_SIGNATURE']
+  twilio_signature = request.env['HTTP_X_TWILIO_SIGNATURE'] || 'invalid'
 
   # Helper from twilio-ruby to validate requests.
   @validator = Twilio::Util::RequestValidator.new ENV['TWILIO_AUTH_TOKEN'] 
@@ -48,7 +48,8 @@ def validate_twilio_request
   is_twilio_req = @validator.validate request.url, post_vars, twilio_signature
 
   unless is_twilio_req
-    render :xml => (Twilio::TwiML::Response.new {|r| r.Hangup}).text, :status => :unauthorized
-    false
+    content_type 'text/xml'
+    response = (Twilio::TwiML::Response.new {|r| r.Hangup}).text
+    halt 401
   end
 end
