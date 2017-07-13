@@ -15,7 +15,7 @@ post '/voice/?' do
   # <Say> a message to the caller
   r.say "Thanks for calling! Your phone number is #{from_number}. I got your call because of Twilio's webhook. Goodbye!", :voice => 'alice', :language => 'en-gb'
 
-  response.to_xml_str
+  response.to_s
 end
 
 # SMS Request URL - receives incoming messages from Twilio
@@ -28,7 +28,7 @@ post '/message/?' do
   r.sms  "Your text to me was #{msg_length} characters long. Webhooks are neat :)"
 
   # Return the TwiML
-  response.to_xml_str
+  response.to_s
 end
 
 # Authenticate that all requests to our public-facing TwiML pages are
@@ -50,7 +50,7 @@ def validate_twilio_request
     content_type 'text/xml'
     response = Twilio::TwiML::VoiceResponse.new
     response.hangup
-    response.to_xml_str
+    response.to_s
     halt 401
   end
 end
