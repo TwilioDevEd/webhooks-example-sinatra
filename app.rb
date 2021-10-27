@@ -1,5 +1,14 @@
+require 'dotenv'
 require 'sinatra'
 require 'twilio-ruby'
+
+# Load environment configuration
+Dotenv.load
+
+# Set the environment after dotenv loads
+# Default to production
+environment = (ENV['APP_ENV'] || ENV['RACK_ENV'] || :production).to_sym
+set :environment, environment
 
 before do
   validate_twilio_request()
